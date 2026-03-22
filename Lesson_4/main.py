@@ -3,6 +3,7 @@ from tkinter import scrolledtext
 from google import genai # pip install google-genai
 from PIL import Image, ImageTk # pip install pillow
 from rules import rules_list
+import json
 
 client = genai.Client()
 
@@ -49,8 +50,10 @@ def onclick(event=None):
             model="gemini-2.5-flash",
             contents=prompt,
         )
-
-        print_message(str(response.text) + "\n")
+        response_text = str(response.text).removeprefix("```json").removesuffix("```")
+        response_json = json.loads(response_text)
+        print_message(response_json.get("response") + "\n")
+        change_emotion(response_json.get("emotion"))
     except Exception as error:
         print(str(error))
 
